@@ -1,0 +1,43 @@
+/*
+ * ProStrive UI tokens. Zero-specificity defaults: redefine any of them on `:root` or on a
+ * wrapping element to theme the components. Colours are neutral information colours only.
+ */
+:where(:root) {
+  --psui-navy: #15324a;
+  --psui-muted: #647688;
+  --psui-line: #e2e9ee;
+  --psui-surface: #f7f9fb;
+  --psui-stage: #fff;
+  --psui-map-line: #d8e3ea;
+  --psui-legend-text: #526777;
+  --psui-radius-card: 14px;
+
+  --psui-stream-idle: #aebdca;
+  --psui-stream-active: #0b8f87;
+
+  --psui-strip-bg: #15324a;
+  --psui-strip-text: #fff;
+  --psui-strip-label: #c1d3e0;
+  --psui-strip-divider: rgb(255 255 255 / 14%);
+  --psui-strip-shadow: 0 6px 18px rgb(21 50 74 / 18%);
+  --psui-state-idle: #adb5bd;
+  --psui-state-live: #ff6b6b;
+  --psui-state-live-ring: rgb(255 107 107 / 28%);
+  --psui-state-attention: #ffa94d;
+  --psui-state-attention-ring: rgb(255 169 77 / 30%);
+  --psui-preview-receiving: #51cf66;
+  --psui-preview-other: #ffa94d;
+
+  --psui-pressure-scale: linear-gradient(
+    90deg,
+    #e9f0f5,
+    #b4d1e0,
+    #3082be,
+    #18a5a0,
+    #4ebc60,
+    #cdcd38,
+    #f0961e,
+    #e84628,
+    #780c1e
+  );
+}

@@ -1,0 +1,211 @@
+{
+  "generatedBy": "sensor_core devices::sim::tests::print_descriptor",
+  "descriptor": {
+    "calibration": {
+      "identityCurve": {
+        "Left": true,
+        "Right": true
+      },
+      "notPhysical": "ADC counts above zero; not kPa, newtons or body-weight multiples",
+      "pressureUnits": "relative signal",
+      "rule": "relative signal only for identity curves over a captured unloaded zero; otherwise unknown",
+      "zeroApplied": {
+        "Left": true,
+        "Right": true
+      }
+    },
+    "faults": {
+      "disconnectEveryMs": null,
+      "disconnectMs": 0,
+      "gapEveryMs": null,
+      "gapMs": 0
+    },
+    "generation": 2,
+    "generator": "prostrive-sensord-mock-runner",
+    "hardware": {
+      "deviceSeed": 14564718931669,
+      "rule": "per-channel baseline, sensitivity, drift and IMU bias follow the simulated devices, not the scenario seed"
+    },
+    "imu": {
+      "accel": "specific force including gravity, sensor frame",
+      "magneticField": {
+        "horizontalUt": 20,
+        "northFromRunningDirectionDeg": 35,
+        "verticalUt": -44
+      },
+      "mounting": {
+        "ankle": "lateral distal shank; sensor z lateral outward, x up the shank",
+        "heel": "back of heel counter; sensor z backward, x up",
+        "laces": "on the laces; sensor x forward 25 degrees down, z instep normal",
+        "segmentFrame": "x forward (toes), y left, z up; foot at heel point, shank along the leg"
+      },
+      "orientationOutput": "computed by sensord's gyro-integration stub; not validated anatomical orientation",
+      "placement": {
+        "Left": ["ankle", "heel"],
+        "Right": ["ankle", "laces"]
+      },
+      "rangesAssumed": "BNO055 operating ranges are not fixed by the hardware configuration; the simulator assumes settings.ranges",
+      "units": ["m/s²", "rad/s", "µT"]
+    },
+    "layout": {
+      "Left": {
+        "id": "prostrive-synthetic-insole",
+        "mapping": "synthetic-wiring-v1",
+        "sha256": "68bcd1690379c3665683230d4e2d5b0afa509d746f5ea589b465bf55ecb6897f",
+        "version": 1
+      },
+      "Right": {
+        "id": "prostrive-synthetic-insole",
+        "mapping": "synthetic-wiring-v1",
+        "sha256": "68bcd1690379c3665683230d4e2d5b0afa509d746f5ea589b465bf55ecb6897f",
+        "version": 1
+      }
+    },
+    "modelVersion": 1,
+    "noise": {
+      "independentStreams": true,
+      "noiseBoundSd": 3.464101615137755,
+      "pressure": "per-channel bounded white noise plus slow baseline drift"
+    },
+    "preset": "running-heel",
+    "schedule": [
+      {
+        "endMs": null,
+        "phase": "running",
+        "startMs": 0
+      }
+    ],
+    "seed": 7,
+    "settings": {
+      "faults": {
+        "disconnectEveryMs": null,
+        "disconnectMs": 0,
+        "gapEveryMs": null,
+        "gapMs": 0
+      },
+      "gait": {
+        "beltSpeedKmh": 10,
+        "cadenceSpm": 170,
+        "contactMs": 240,
+        "left": {
+          "contact": 1,
+          "peak": 1
+        },
+        "right": {
+          "contact": 1,
+          "peak": 1
+        },
+        "rightOffsetCycles": 0,
+        "template": "heel-first"
+      },
+      "noise": {
+        "accelBiasMps2": 0.05,
+        "accelMps2": 0.04,
+        "baselineMaxCounts": 380,
+        "baselineMinCounts": 120,
+        "driftCounts": 6,
+        "gyroBiasRadS": 0.01,
+        "gyroRadS": 0.004,
+        "magOffsetUt": 4,
+        "magUt": 0.3,
+        "pressureCounts": 4,
+        "sensitivitySpread": 0.12
+      },
+      "preset": "running-heel",
+      "ranges": {
+        "accelG": 16,
+        "adcMax": 4095,
+        "gyroDps": 2000,
+        "magUt": 1300
+      },
+      "seed": 7,
+      "sequence": {
+        "fadeS": 2.5,
+        "slowdownS": 15,
+        "standingS": 20,
+        "startBeltKmh": 7,
+        "startCadenceSpm": 150,
+        "startContactMs": 300,
+        "startIntensity": 0.65,
+        "steadyS": 120,
+        "transitionS": 15
+      },
+      "shoePlacement": {
+        "left": "heel",
+        "right": "laces"
+      },
+      "variability": {
+        "area": 0.05,
+        "cadenceDrift": 0.015,
+        "contactDuration": 0.05,
+        "footContact": 0.02,
+        "footPathMm": 1,
+        "footPeak": 0.03,
+        "loadDrift": 0.04,
+        "pathDriftMm": 1,
+        "peak": 0.08,
+        "poseDeg": 2,
+        "regionPositionMm": 2,
+        "stepInterval": 0.03
+      },
+      "variation": 1
+    },
+    "timing": {
+      "deviceTick": "bootOffsetUs + round(simUs * (1 + driftPpm * 1e-6))",
+      "devices": {
+        "Left": {
+          "bootOffsetUs": "7314512",
+          "driftPpm": 18,
+          "originTick": "7314561",
+          "periodUs": 10000,
+          "sampleOffsetUs": 3217
+        },
+        "Right": {
+          "bootOffsetUs": "2048093",
+          "driftPpm": -12,
+          "originTick": "2048142",
+          "periodUs": 10000,
+          "sampleOffsetUs": 8903
+        }
+      },
+      "originHostNs": "49059",
+      "originSimUs": "49",
+      "recordingStartScenarioUs": "12000000",
+      "recordingStartedTsNs": "9007199254740999",
+      "scenarioUs": "round((tick - bootOffsetUs) / (1 + driftPpm * 1e-6)) - originSimUs",
+      "simClock": "microseconds since the simulator started"
+    },
+    "variation": 1,
+    "version": 1
+  },
+  "status": {
+    "faultsEnabled": false,
+    "generation": 2,
+    "generator": "prostrive-sensord-mock-runner",
+    "imuPlacement": {
+      "Left": ["ankle", "heel"],
+      "Right": ["ankle", "laces"]
+    },
+    "layout": {
+      "Left": {
+        "id": "prostrive-synthetic-insole",
+        "mapping": "synthetic-wiring-v1",
+        "sha256": "68bcd1690379c3665683230d4e2d5b0afa509d746f5ea589b465bf55ecb6897f",
+        "version": 1
+      },
+      "Right": {
+        "id": "prostrive-synthetic-insole",
+        "mapping": "synthetic-wiring-v1",
+        "sha256": "68bcd1690379c3665683230d4e2d5b0afa509d746f5ea589b465bf55ecb6897f",
+        "version": 1
+      }
+    },
+    "modelVersion": 1,
+    "phase": "running",
+    "preset": "running-heel",
+    "scenarioMs": 0,
+    "seed": 7,
+    "variation": 1,
+    "version": 1
+  }
+}
