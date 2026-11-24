@@ -47,6 +47,7 @@ export {
   outlineFor,
   padPosition,
   padValues,
+  pressureCentroid,
   STRIVE_INSOLE_LAYOUT,
 } from './layout';
 export type { InsolePad, SensorInsoleLayout } from './layout';

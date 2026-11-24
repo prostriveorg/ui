@@ -188,6 +188,28 @@ export const HARDWARE_INSOLE_LAYOUT: SensorInsoleLayout = Object.freeze<SensorIn
   ]),
 });
 
+/** Weighted pressure centroid in the layout's foot-side coordinates; null for no pressure. */
+export function pressureCentroid(
+  layout: SensorInsoleLayout,
+  values: readonly (number | null)[],
+  foot: Foot,
+): { x: number; y: number } | null {
+  let total = 0;
+  let x = 0;
+  let y = 0;
+  layout.pads.forEach((pad, index) => {
+    const value = Math.max(0, values[index] ?? 0);
+    total += value;
+    x += pad.x * value;
+    y += pad.y * value;
+  });
+  if (total <= 0) return null;
+  return {
+    x: foot === 'Right' ? layout.width - x / total : x / total,
+    y: y / total,
+  };
+}
+
 /** Mirror an x coordinate for the right foot; the right insole is the left sensor turned over. */
 export function footX(layout: SensorInsoleLayout, x: number, foot: Foot) {
   return foot === 'Right' ? layout.width - x : x;

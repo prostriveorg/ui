@@ -20,6 +20,7 @@ export function InsoleDiagram({
   maxHeight = 420,
   title,
   style,
+  centerOfPressure,
 }: {
   layout: SensorInsoleLayout;
   foot: Foot;
@@ -31,6 +32,8 @@ export function InsoleDiagram({
   title: string;
   /** Caller-controlled sizing; useful for a card that fills a fixed row. */
   style?: CSSProperties;
+  /** Weighted pressure centroid in layout coordinates, if known. */
+  centerOfPressure?: { x: number; y: number } | null;
 }) {
   const flipY = (y: number) => layout.length - y;
   const outline = outlineFor(layout, foot)
@@ -88,6 +91,26 @@ export function InsoleDiagram({
           </g>
         );
       })}
+      {centerOfPressure && (
+        <g pointerEvents="none" aria-label="Center of pressure">
+          <circle
+            cx={centerOfPressure.x}
+            cy={flipY(centerOfPressure.y)}
+            r={4.2}
+            fill="var(--mantine-color-primary-6)"
+            stroke="var(--mantine-color-white)"
+            strokeWidth={1.2}
+          />
+          <circle
+            cx={centerOfPressure.x}
+            cy={flipY(centerOfPressure.y)}
+            r={7}
+            fill="none"
+            stroke="var(--mantine-color-primary-6)"
+            strokeWidth={0.8}
+          />
+        </g>
+      )}
     </svg>
   );
 }
