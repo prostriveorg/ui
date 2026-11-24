@@ -42,6 +42,7 @@ export type {
 
 export {
   footX,
+  HARDWARE_INSOLE_LAYOUT,
   isFullyMapped,
   outlineFor,
   padPosition,

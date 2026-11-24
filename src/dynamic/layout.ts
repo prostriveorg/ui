@@ -172,6 +172,22 @@ export const STRIVE_INSOLE_LAYOUT: SensorInsoleLayout = Object.freeze<SensorInso
   channelForPad: Object.freeze(Array.from({ length: 64 }, () => null)),
 });
 
+/**
+ * Hardware channel mapping from the vendor drawing labels (A1–H8), used by the native
+ * technician view. This is the live hardware layout; it is not a source binding and does not
+ * change the recorded provenance.
+ */
+export const HARDWARE_INSOLE_LAYOUT: SensorInsoleLayout = Object.freeze<SensorInsoleLayout>({
+  ...STRIVE_INSOLE_LAYOUT,
+  source:
+    'Pad centres traced from the vendor drawing; channel mapping from the vendor drawing labels.',
+  channelForPad: Object.freeze([
+    56, 57, 48, 58, 59, 49, 50, 60, 40, 51, 61, 41, 52, 62, 42, 53, 63, 43, 54, 55, 44, 45, 46, 32,
+    33, 47, 24, 34, 35, 16, 25, 26, 36, 8, 17, 27, 37, 0, 9, 18, 28, 38, 1, 10, 19, 29, 39, 2, 11,
+    20, 30, 31, 3, 12, 21, 22, 23, 4, 13, 14, 15, 5, 6, 7,
+  ]),
+});
+
 /** Mirror an x coordinate for the right foot; the right insole is the left sensor turned over. */
 export function footX(layout: SensorInsoleLayout, x: number, foot: Foot) {
   return foot === 'Right' ? layout.width - x : x;

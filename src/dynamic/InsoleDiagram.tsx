@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react';
+
 import type { Foot } from '../foot';
 import { outlineFor, padPosition } from './layout';
 import type { InsolePad, SensorInsoleLayout } from './layout';
@@ -17,6 +19,7 @@ export function InsoleDiagram({
   onPadClick,
   maxHeight = 420,
   title,
+  style,
 }: {
   layout: SensorInsoleLayout;
   foot: Foot;
@@ -26,6 +29,8 @@ export function InsoleDiagram({
   onPadClick?: (pad: number) => void;
   maxHeight?: number;
   title: string;
+  /** Caller-controlled sizing; useful for a card that fills a fixed row. */
+  style?: CSSProperties;
 }) {
   const flipY = (y: number) => layout.length - y;
   const outline = outlineFor(layout, foot)
@@ -37,7 +42,7 @@ export function InsoleDiagram({
       viewBox={`${-MARGIN} ${-MARGIN} ${layout.width + MARGIN * 2} ${layout.length + MARGIN * 2}`}
       role="img"
       aria-label={title}
-      style={{ display: 'block', width: '100%', maxHeight, margin: '0 auto' }}
+      style={{ display: 'block', width: '100%', maxHeight, margin: '0 auto', ...style }}
     >
       <polygon
         points={outline}
