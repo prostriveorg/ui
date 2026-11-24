@@ -67,11 +67,14 @@ export function LiveMovement({
   preview,
   source = null,
   originNs = '0',
+  maxFps = 30,
 }: {
   preview: LivePreview;
   source?: ResolvedSource | null;
   /** Chart time origin in box nanoseconds; default 0 shows box-clock seconds. */
   originNs?: string;
+  /** Canvas redraw ceiling for the movement chart. */
+  maxFps?: number;
 }) {
   const bound = boundSource(source);
   return (
@@ -80,6 +83,7 @@ export function LiveMovement({
       units={bound ? 'physical' : 'unknown'}
       placement={bound?.simulation.placement}
       getPoints={() => imuPoints(preview, performance.now(), originNs)}
+      maxFps={maxFps}
     />
   );
 }
@@ -154,6 +158,7 @@ export function LiveWorkspace({
   markers = [],
   recording = null,
   defaultView = 'overview',
+  maxFps = 30,
 }: {
   preview: LivePreview;
   units: string;
@@ -164,6 +169,8 @@ export function LiveWorkspace({
   /** The confirmed recording, for the details panel; null before the box confirms one. */
   recording?: { id: string; startedTsNs: string } | null;
   defaultView?: LiveView;
+  /** Canvas redraw ceiling shared by the live plot and movement chart. */
+  maxFps?: number;
 }) {
   const now = useTick(2);
   const [view, setView] = useState<string>(defaultView);
@@ -189,7 +196,13 @@ export function LiveWorkspace({
       />
       {view === 'overview' && (
         <>
-          <LiveSignalPlot preview={preview.buffers} units={units} height={230} markers={markers} />
+          <LiveSignalPlot
+            preview={preview.buffers}
+            units={units}
+            height={230}
+            markers={markers}
+            maxFps={maxFps}
+          />
           <Group justify="space-between" wrap="wrap" gap="xs">
             <MarkerSummary markers={markers} />
             {totalGaps > 0 && (
@@ -202,7 +215,9 @@ export function LiveWorkspace({
         </>
       )}
       {view === 'channels' && <LiveChannels preview={preview} units={units} source={source} />}
-      {view === 'movement' && <LiveMovement preview={preview} source={source} />}
+      {view === 'movement' && (
+        <LiveMovement preview={preview} source={source} maxFps={maxFps} />
+      )}
       <Accordion variant="contained" radius="md" chevronPosition="left">
         <Accordion.Item value="details">
           <Accordion.Control>Recording details</Accordion.Control>

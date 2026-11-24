@@ -55,6 +55,7 @@
     "playground": "vite --config playground/vite.config.ts",
     "playground:build": "vite build --config playground/vite.config.ts",
     "browser:check": "node scripts/browser-check.mjs",
+    "prepare": "yarn build",
     "prepack": "yarn build"
   },
   "devDependencies": {

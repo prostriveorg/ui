@@ -10,6 +10,7 @@ export { useRecordingClock, useTick } from './hooks';
 export { FootLegend, LiveSignalPlot } from './LiveSignalPlot';
 export { InsoleDiagram } from './InsoleDiagram';
 export { PressureField, PressureGrid } from './PressureField';
+export { ImuAxes } from './ImuAxes';
 export { ImuSignals } from './ImuSignals';
 export {
   LiveChannels,

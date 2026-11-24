@@ -35,7 +35,7 @@ export function FootLegend({ foot }: { foot: Foot }) {
 /**
  * Ten seconds of each foot's mean channel signal from the read-only preview stream. Time follows
  * the box sample timestamps; traces break where the live view broke. Box-stamped markers share the
- * same clock. Redraws at most 30 Hz without re-rendering React.
+ * same clock. Redraws at most `maxFps` (default 30) without re-rendering React.
  */
 export function LiveSignalPlot({
   preview,
@@ -44,6 +44,7 @@ export function LiveSignalPlot({
   title = 'Mean channel signal',
   markers = [],
   bare = false,
+  maxFps = 30,
 }: {
   /** Per-foot preview series; read on each animation frame, never copied into React state. */
   preview: Readonly<Record<Foot, PreviewSeries>>;
@@ -55,6 +56,8 @@ export function LiveSignalPlot({
   markers?: readonly { timestampNs: string; label: string }[];
   /** Without the card frame, for embedding. */
   bare?: boolean;
+  /** Canvas redraw ceiling. Lower it for a busy web page; kiosk views can use 60. */
+  maxFps?: number;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const markerRef = useRef(markers);
@@ -64,7 +67,7 @@ export function LiveSignalPlot({
     let previous = -Infinity;
     function draw(now: number) {
       animation = requestAnimationFrame(draw);
-      if (now - previous < 1000 / 30) return;
+      if (now - previous < 1000 / Math.max(1, maxFps)) return;
       previous = now;
       const element = canvas.current;
       const context = element?.getContext('2d');
@@ -169,7 +172,7 @@ export function LiveSignalPlot({
     }
     animation = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(animation);
-  }, [preview, height]);
+  }, [preview, height, maxFps]);
   const body = (
     <>
       <Group justify="space-between" mb={4} wrap="wrap" gap="xs">

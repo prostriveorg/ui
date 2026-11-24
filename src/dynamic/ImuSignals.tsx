@@ -11,9 +11,9 @@ import type { SimulationSource } from './source';
 type Marker = { tMs: number; label: string };
 /**
  * Accelerometer and angular-speed traces of both feet in sample time, with a sensor and axis
- * selector. Canvas refresh is capped at 30 Hz and status text at 2 Hz; selectors and status never
- * re-render at sample rate. Units are `unknown` unless the caller states that the source
- * declares physical units.
+ * selector. Canvas refresh is capped at `maxFps` (default 30) and status text at 2 Hz; selectors
+ * and status never re-render at sample rate. Units are `unknown` unless the caller states that
+ * the source declares physical units.
  */
 export function ImuSignals({
   getPoints,
@@ -26,6 +26,7 @@ export function ImuSignals({
   onSensor,
   units = 'unknown',
   placement,
+  maxFps = 30,
 }: {
   /** Read on each animation frame; keep it cheap and return bounded windows. */
   getPoints: () => ImuPoints;
@@ -40,6 +41,8 @@ export function ImuSignals({
   units?: 'physical' | 'unknown';
   /** Simulated placement from a validated descriptor; absent means placement is not recorded. */
   placement?: SimulationSource['placement'];
+  /** Canvas redraw ceiling. Lower it for busy pages; kiosk views can use 60. */
+  maxFps?: number;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const [localSensor, setLocalSensor] = useState('0');
@@ -58,7 +61,7 @@ export function ImuSignals({
       lastStatus = -Infinity;
     function draw(now: number) {
       request = requestAnimationFrame(draw);
-      if (now - previous < 1000 / 30) return;
+      if (now - previous < 1000 / Math.max(1, maxFps)) return;
       previous = now;
       const {
         getPoints: read,
@@ -207,7 +210,7 @@ export function ImuSignals({
     }
     request = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(request);
-  }, [sensor, axis, live]);
+  }, [sensor, axis, live, maxFps]);
   return (
     <Paper
       withBorder
