@@ -45,6 +45,7 @@ export function LiveSignalPlot({
   markers = [],
   bare = false,
   maxFps = 30,
+  fill = false,
 }: {
   /** Per-foot preview series; read on each animation frame, never copied into React state. */
   preview: Readonly<Record<Foot, PreviewSeries>>;
@@ -58,6 +59,8 @@ export function LiveSignalPlot({
   bare?: boolean;
   /** Canvas redraw ceiling. Lower it for a busy web page; kiosk views can use 60. */
   maxFps?: number;
+  /** Stretch the canvas to the caller's height instead of using the `height` prop. */
+  fill?: boolean;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const markerRef = useRef(markers);
@@ -73,16 +76,18 @@ export function LiveSignalPlot({
       const context = element?.getContext('2d');
       if (!element || !context || !element.clientWidth) return;
       const width = element.clientWidth;
+      const renderedHeight = fill ? element.clientHeight : height;
+      if (!renderedHeight) return;
       const ratio = window.devicePixelRatio || 1;
       if (
         element.width !== Math.round(width * ratio) ||
-        element.height !== Math.round(height * ratio)
+        element.height !== Math.round(renderedHeight * ratio)
       ) {
         element.width = Math.round(width * ratio);
-        element.height = Math.round(height * ratio);
+        element.height = Math.round(renderedHeight * ratio);
       }
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      context.clearRect(0, 0, width, height);
+      context.clearRect(0, 0, width, renderedHeight);
       const series = FEET.map((foot) => {
         const buffer = preview[foot];
         const fresh = !!buffer.latest && now - buffer.latest.receivedAt <= STALE_AFTER_MS;
@@ -101,7 +106,7 @@ export function LiveSignalPlot({
       const left = 52,
         right = width - 14,
         top = 12,
-        bottom = height - 28;
+        bottom = renderedHeight - 28;
       const x = (ageMs: number) => right - (ageMs / PREVIEW_WINDOW_MS) * (right - left);
       const y = (value: number) => bottom - (Math.max(0, value) / peak) * (bottom - top);
       context.font = '12px system-ui, sans-serif';
@@ -122,7 +127,7 @@ export function LiveSignalPlot({
       }
       for (const seconds of [10, 8, 6, 4, 2, 0]) {
         context.textAlign = seconds === 10 ? 'left' : seconds === 0 ? 'right' : 'center';
-        context.fillText(seconds ? `−${seconds} s` : 'now', x(seconds * 1000), height - 8);
+        context.fillText(seconds ? `−${seconds} s` : 'now', x(seconds * 1000), renderedHeight - 8);
       }
       if (endNs > 0n)
         for (const marker of markerRef.current) {
@@ -172,9 +177,15 @@ export function LiveSignalPlot({
     }
     animation = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(animation);
-  }, [preview, height, maxFps]);
+  }, [preview, height, maxFps, fill]);
   const body = (
-    <>
+    <div
+      style={
+        fill
+          ? { height: '100%', minHeight: 0, display: 'flex', flexDirection: 'column' }
+          : undefined
+      }
+    >
       <Group justify="space-between" mb={4} wrap="wrap" gap="xs">
         <Group gap="xs" align="baseline">
           <Title order={4}>{title}</Title>
@@ -192,14 +203,28 @@ export function LiveSignalPlot({
         ref={canvas}
         role="img"
         aria-label="Left (solid) and right (dashed) mean channel signal over the last ten seconds of live preview. Breaks are preview gaps."
-        style={{ width: '100%', height, display: 'block' }}
+        style={{
+          width: '100%',
+          height: fill ? '100%' : height,
+          display: 'block',
+          flex: fill ? 1 : undefined,
+          minHeight: fill ? 0 : undefined,
+        }}
       />
-    </>
+    </div>
   );
   return bare ? (
-    <div>{body}</div>
+    <div style={fill ? { height: '100%', minHeight: 0 } : undefined}>{body}</div>
   ) : (
-    <section className={classes.chartCard} aria-label="Live signal over time">
+    <section
+      className={classes.chartCard}
+      aria-label="Live signal over time"
+      style={
+        fill
+          ? { height: '100%', minHeight: 0, display: 'flex', flexDirection: 'column' }
+          : undefined
+      }
+    >
       {body}
     </section>
   );
