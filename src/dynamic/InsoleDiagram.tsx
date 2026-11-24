@@ -21,6 +21,7 @@ export function InsoleDiagram({
   title,
   style,
   centerOfPressure,
+  centerTrail = [],
 }: {
   layout: SensorInsoleLayout;
   foot: Foot;
@@ -34,6 +35,8 @@ export function InsoleDiagram({
   style?: CSSProperties;
   /** Weighted pressure centroid in layout coordinates, if known. */
   centerOfPressure?: { x: number; y: number } | null;
+  /** Recent centroid positions in layout coordinates. */
+  centerTrail?: readonly { x: number; y: number }[];
 }) {
   const flipY = (y: number) => layout.length - y;
   const outline = outlineFor(layout, foot)
@@ -91,6 +94,18 @@ export function InsoleDiagram({
           </g>
         );
       })}
+      {centerTrail.length > 1 && (
+        <polyline
+          points={centerTrail.map((point) => `${point.x},${flipY(point.y)}`).join(' ')}
+          fill="none"
+          stroke="var(--mantine-color-primary-6)"
+          strokeOpacity={0.45}
+          strokeWidth={1.2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          pointerEvents="none"
+        />
+      )}
       {centerOfPressure && (
         <g pointerEvents="none" aria-label="Center of pressure">
           <circle
