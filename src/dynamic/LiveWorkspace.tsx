@@ -159,6 +159,7 @@ export function LiveWorkspace({
   recording = null,
   defaultView = 'overview',
   maxFps = 30,
+  channelsHz = 10,
 }: {
   preview: LivePreview;
   units: string;
@@ -171,6 +172,8 @@ export function LiveWorkspace({
   defaultView?: LiveView;
   /** Canvas redraw ceiling shared by the live plot and movement chart. */
   maxFps?: number;
+  /** Pressure-channel value refresh rate in the channels view. */
+  channelsHz?: number;
 }) {
   const now = useTick(2);
   const [view, setView] = useState<string>(defaultView);
@@ -214,7 +217,9 @@ export function LiveWorkspace({
           </Group>
         </>
       )}
-      {view === 'channels' && <LiveChannels preview={preview} units={units} source={source} />}
+      {view === 'channels' && (
+        <LiveChannels preview={preview} units={units} source={source} refreshHz={channelsHz} />
+      )}
       {view === 'movement' && (
         <LiveMovement preview={preview} source={source} maxFps={maxFps} />
       )}
