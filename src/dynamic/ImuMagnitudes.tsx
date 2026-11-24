@@ -200,7 +200,7 @@ export function ImuMagnitudes({
             Movement magnitudes
           </Title>
           <Text size="xs" c="dimmed">
-            IMU {Number(sensor) + 1} · sensor-frame magnitude · last 10 s
+            IMU {Number(sensor)} · sensor-frame magnitude · last 10 s
           </Text>
         </Group>
         <Group gap="md">
@@ -210,7 +210,7 @@ export function ImuMagnitudes({
       </Group>
       {empty && (
         <Text size="xs" fw={600}>
-          No usable movement-sensor samples from IMU {Number(sensor) + 1}.
+          No usable movement-sensor samples from IMU {Number(sensor)}.
         </Text>
       )}
       <SimpleGrid
