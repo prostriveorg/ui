@@ -201,7 +201,13 @@ export function ImuMagnitudes({
       withBorder
       p="xs"
       radius="md"
-      style={{ minHeight: 0, height: '100%', display: 'flex', flexDirection: 'column' }}
+      style={{
+        minHeight: 0,
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        gridColumn: fragment ? 'span 2' : undefined,
+      }}
     >
       <Group justify="space-between" gap="xs" wrap="nowrap">
         <Text size="xs" fw={700}>
