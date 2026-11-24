@@ -205,7 +205,7 @@ export function LiveSignalPlot({
         aria-label="Left (solid) and right (dashed) mean channel signal over the last ten seconds of live preview. Breaks are preview gaps."
         style={{
           width: '100%',
-          height: fill ? '100%' : height,
+          height: fill ? 0 : height,
           display: 'block',
           flex: fill ? 1 : undefined,
           minHeight: fill ? 0 : undefined,
