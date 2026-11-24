@@ -26,6 +26,7 @@ export function PressureGrid({
   showValues = false,
   live = false,
   displayMax = DISPLAY_SIGNAL_MAX,
+  fill = false,
 }: {
   foot: Foot;
   pressure: ArrayLike<number> | null;
@@ -34,6 +35,8 @@ export function PressureGrid({
   live?: boolean;
   /** Top of the colour scale. Original values are shown unchanged. */
   displayMax?: number;
+  /** Fill the available card height with the grid instead of using a fixed square. */
+  fill?: boolean;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -66,20 +69,47 @@ export function PressureGrid({
     }
   }, [pressure, showValues, displayMax]);
   return (
-    <div className={classes.map}>
+    <div
+      className={classes.map}
+      style={
+        fill
+          ? { height: '100%', display: 'flex', flexDirection: 'column', minHeight: 0 }
+          : undefined
+      }
+    >
       <Text size={compact ? 'sm' : 'md'} fw={650} c={FOOT_COLORS[foot]}>
         {foot}
       </Text>
-      <canvas
-        ref={canvas}
-        width={320}
-        height={320}
-        role="img"
-        aria-label={`${foot} indexed 8 by 8 sensor grid ${live ? 'in the live preview' : 'at the current replay time'}${pressure ? '' : ', no data'}`}
-        className={classes.mapCanvas}
-        style={compact ? { maxWidth: 132 } : undefined}
-      />
-      {!compact && (
+      {fill ? (
+        <div style={{ flex: 1, minHeight: 0, display: 'grid', placeItems: 'center' }}>
+          <canvas
+            ref={canvas}
+            width={320}
+            height={320}
+            role="img"
+            aria-label={`${foot} indexed 8 by 8 sensor grid ${live ? 'in the live preview' : 'at the current replay time'}${pressure ? '' : ', no data'}`}
+            className={classes.mapCanvas}
+            style={{
+              height: '100%',
+              width: 'auto',
+              maxWidth: '100%',
+              maxHeight: '100%',
+              margin: 0,
+            }}
+          />
+        </div>
+      ) : (
+        <canvas
+          ref={canvas}
+          width={320}
+          height={320}
+          role="img"
+          aria-label={`${foot} indexed 8 by 8 sensor grid ${live ? 'in the live preview' : 'at the current replay time'}${pressure ? '' : ', no data'}`}
+          className={classes.mapCanvas}
+          style={compact ? { maxWidth: 132 } : undefined}
+        />
+      )}
+      {!compact && !fill && (
         <Text size="xs" c="dimmed">
           Channels 1–64 · row 1 at top
         </Text>

@@ -11,6 +11,7 @@ export { FootLegend, LiveSignalPlot } from './LiveSignalPlot';
 export { InsoleDiagram } from './InsoleDiagram';
 export { PressureField, PressureGrid } from './PressureField';
 export { ImuAxes } from './ImuAxes';
+export { ImuMagnitudes } from './ImuMagnitudes';
 export { ImuSignals } from './ImuSignals';
 export {
   LiveChannels,
