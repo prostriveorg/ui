@@ -46,6 +46,8 @@ export function ImuMagnitudes({
   units = 'unknown',
   maxFps = 30,
   fragment = false,
+  metrics = ['accel', 'gyro', 'mag'],
+  vertical = false,
 }: {
   /** Read on each animation frame; return bounded live or replay points. */
   getPoints: () => ImuPoints;
@@ -57,6 +59,10 @@ export function ImuMagnitudes({
   maxFps?: number;
   /** Return the three cards as grid children instead of wrapping them in a row. */
   fragment?: boolean;
+  /** Which magnitude traces to render. */
+  metrics?: readonly ('accel' | 'gyro' | 'mag')[];
+  /** Stack the cards vertically instead of using the default row. */
+  vertical?: boolean;
 }) {
   const canvases = useRef<(HTMLCanvasElement | null)[]>([]);
   const [empty, setEmpty] = useState(false);
@@ -195,7 +201,7 @@ export function ImuMagnitudes({
     return () => cancelAnimationFrame(request);
   }, [sensor, maxFps]);
 
-  const cards = METRICS.map((metric, index) => (
+  const cards = METRICS.filter((metric) => metrics.includes(metric.key)).map((metric, index) => (
     <Paper
       key={metric.key}
       withBorder
@@ -203,7 +209,8 @@ export function ImuMagnitudes({
       radius="md"
       style={{
         minHeight: 0,
-        height: '100%',
+        height: vertical ? 0 : '100%',
+        flex: vertical ? 1 : undefined,
         display: 'flex',
         flexDirection: 'column',
         gridColumn: fragment ? 'span 2' : undefined,
@@ -229,6 +236,14 @@ export function ImuMagnitudes({
       </div>
     </Paper>
   ));
+
+  if (vertical) {
+    return (
+      <Stack gap={8} style={{ height: '100%', minHeight: 0 }}>
+        {cards}
+      </Stack>
+    );
+  }
 
   if (fragment) return <>{cards}</>;
 
