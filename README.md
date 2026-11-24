@@ -122,11 +122,13 @@ unless the source binds to a complete mapping:
 ## Components (`@prostriveorg/ui/dynamic`)
 
 - `LiveSignalPlot`, `FootLegend` — paired Left (solid) / Right (dashed) mean channel signal,
-  last 10 s, box-timestamp axis, markers; canvas at ≤ 30 Hz.
+  last 10 s, box-timestamp axis, markers; canvas at ≤ 30 Hz by default (`maxFps` for a kiosk).
 - `PressureField`, `PressureGrid` — raw channel grid, or mapped insole (smooth field, pads,
   signal path) for an eligible source; readout of highest channel and channel mean.
 - `InsoleDiagram` — the physical insole drawing; callers choose pad fills and labels.
 - `ImuSignals` — movement-sensor traces with sensor and axis selectors.
+- `ImuAxes` — all three sensor-frame axes at once, two rows (acceleration and angular speed),
+  with Left/Right traces in every panel; useful for technician inspection.
 - `LiveChannels`, `LiveMovement`, `LiveResponse`, `MarkerSummary`, `LiveWorkspace` — the live
   workspace and its Overview / Sensor channels / Movement views.
 - `RecordingStrip`, `StripLabel`, `useRecordingClock`, `useTick` — recording status
@@ -180,7 +182,8 @@ interfaces:
    message per sample, and call `ingestSample(buffers, envelope, performance.now())` for each.
    Keep ticks and timestamps as strings across IPC; never convert them to JS numbers.
 2. **Availability.** Set `connected` from the transport and `subscribed` from whether
-   samples were requested; buffers handle staleness and missing feet.
+   samples were requested; buffers handle staleness and missing feet. Kiosk consumers can pass
+   `maxFps={60}` to the live canvases without changing the web default.
 3. **Recorder state.** Derive the `RecordingStrip` inputs and the clock anchor from the box's
    authoritative control snapshot (`/capture/v1`), exactly as the web app does — never from
    preview samples. Commands, persistence and upload stay in the desktop application.
