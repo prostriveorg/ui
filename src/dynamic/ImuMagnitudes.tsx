@@ -1,4 +1,4 @@
-import { Group, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/core';
+import { Flex, Group, Paper, Stack, Text, Title } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';
 
 import { FEET } from '../foot';
@@ -47,7 +47,7 @@ export function ImuMagnitudes({
   maxFps = 30,
   fragment = false,
   metrics = ['accel', 'gyro', 'mag'],
-  vertical = false,
+  orientation = 'horizontal',
 }: {
   /** Read on each animation frame; return bounded live or replay points. */
   getPoints: () => ImuPoints;
@@ -61,8 +61,8 @@ export function ImuMagnitudes({
   fragment?: boolean;
   /** Which magnitude traces to render. */
   metrics?: readonly ('accel' | 'gyro' | 'mag')[];
-  /** Stack the cards vertically instead of using the default row. */
-  vertical?: boolean;
+  /** Card flow within the component. */
+  orientation?: 'horizontal' | 'vertical';
 }) {
   const canvases = useRef<(HTMLCanvasElement | null)[]>([]);
   const [empty, setEmpty] = useState(false);
@@ -201,6 +201,7 @@ export function ImuMagnitudes({
     return () => cancelAnimationFrame(request);
   }, [sensor, maxFps]);
 
+  const vertical = orientation === 'vertical';
   const cards = METRICS.filter((metric) => metrics.includes(metric.key)).map((metric, index) => (
     <Paper
       key={metric.key}
@@ -210,7 +211,8 @@ export function ImuMagnitudes({
       style={{
         minHeight: 0,
         height: vertical ? 0 : '100%',
-        flex: vertical ? 1 : undefined,
+        flex: 1,
+        minWidth: 0,
         display: 'flex',
         flexDirection: 'column',
         gridColumn: fragment ? 'span 2' : undefined,
@@ -237,15 +239,15 @@ export function ImuMagnitudes({
     </Paper>
   ));
 
+  if (fragment) return <>{cards}</>;
+
   if (vertical) {
     return (
-      <Stack gap={8} style={{ height: '100%', minHeight: 0 }}>
+      <Flex direction="column" gap="sm" style={{ height: '100%', minHeight: 0 }}>
         {cards}
-      </Stack>
+      </Flex>
     );
   }
-
-  if (fragment) return <>{cards}</>;
 
   return (
     <Stack gap={4} style={{ height: '100%', minHeight: 0 }}>
@@ -268,13 +270,9 @@ export function ImuMagnitudes({
           No usable movement-sensor samples from IMU {Number(sensor)}.
         </Text>
       )}
-      <SimpleGrid
-        cols={3}
-        spacing="sm"
-        style={{ flex: 1, minHeight: 0, gridTemplateRows: 'minmax(0, 1fr)' }}
-      >
+      <Flex direction="row" gap="sm" style={{ flex: 1, minHeight: 0 }}>
         {cards}
-      </SimpleGrid>
+      </Flex>
     </Stack>
   );
 }
