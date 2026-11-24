@@ -45,6 +45,7 @@ export function ImuMagnitudes({
   sensor = '0',
   units = 'unknown',
   maxFps = 30,
+  fragment = false,
 }: {
   /** Read on each animation frame; return bounded live or replay points. */
   getPoints: () => ImuPoints;
@@ -54,6 +55,8 @@ export function ImuMagnitudes({
   units?: 'physical' | 'unknown';
   /** Canvas redraw ceiling. Lower it for a busy page; kiosk views can use 60. */
   maxFps?: number;
+  /** Return the three cards as grid children instead of wrapping them in a row. */
+  fragment?: boolean;
 }) {
   const canvases = useRef<(HTMLCanvasElement | null)[]>([]);
   const [empty, setEmpty] = useState(false);
@@ -192,6 +195,37 @@ export function ImuMagnitudes({
     return () => cancelAnimationFrame(request);
   }, [sensor, maxFps]);
 
+  const cards = METRICS.map((metric, index) => (
+    <Paper
+      key={metric.key}
+      withBorder
+      p="xs"
+      radius="md"
+      style={{ minHeight: 0, height: '100%', display: 'flex', flexDirection: 'column' }}
+    >
+      <Group justify="space-between" gap="xs" wrap="nowrap">
+        <Text size="xs" fw={700}>
+          {metric.label}
+        </Text>
+        <Text size="10px" c="dimmed">
+          {metric.unit(units === 'physical')}
+        </Text>
+      </Group>
+      <div style={{ flex: 1, minHeight: 0 }}>
+        <canvas
+          ref={(node) => {
+            canvases.current[index] = node;
+          }}
+          role="img"
+          aria-label={`${metric.label}, left solid and right dashed`}
+          style={{ width: '100%', height: '100%', display: 'block' }}
+        />
+      </div>
+    </Paper>
+  ));
+
+  if (fragment) return <>{cards}</>;
+
   return (
     <Stack gap={4} style={{ height: '100%', minHeight: 0 }}>
       <Group justify="space-between" wrap="nowrap">
@@ -218,34 +252,7 @@ export function ImuMagnitudes({
         spacing="sm"
         style={{ flex: 1, minHeight: 0, gridTemplateRows: 'minmax(0, 1fr)' }}
       >
-        {METRICS.map((metric, index) => (
-          <Paper
-            key={metric.key}
-            withBorder
-            p="xs"
-            radius="md"
-            style={{ minHeight: 0, display: 'flex', flexDirection: 'column' }}
-          >
-            <Group justify="space-between" gap="xs" wrap="nowrap">
-              <Text size="xs" fw={700}>
-                {metric.label}
-              </Text>
-              <Text size="10px" c="dimmed">
-                {metric.unit(units === 'physical')}
-              </Text>
-            </Group>
-            <div style={{ flex: 1, minHeight: 0 }}>
-              <canvas
-                ref={(node) => {
-                  canvases.current[index] = node;
-                }}
-                role="img"
-                aria-label={`${metric.label}, left solid and right dashed`}
-                style={{ width: '100%', height: '100%', display: 'block' }}
-              />
-            </div>
-          </Paper>
-        ))}
+        {cards}
       </SimpleGrid>
     </Stack>
   );
