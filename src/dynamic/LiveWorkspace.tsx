@@ -220,9 +220,7 @@ export function LiveWorkspace({
       {view === 'channels' && (
         <LiveChannels preview={preview} units={units} source={source} refreshHz={channelsHz} />
       )}
-      {view === 'movement' && (
-        <LiveMovement preview={preview} source={source} maxFps={maxFps} />
-      )}
+      {view === 'movement' && <LiveMovement preview={preview} source={source} maxFps={maxFps} />}
       <Accordion variant="contained" radius="md" chevronPosition="left">
         <Accordion.Item value="details">
           <Accordion.Control>Recording details</Accordion.Control>

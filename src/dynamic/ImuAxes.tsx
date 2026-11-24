@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from 'react';
 
 import { FEET } from '../foot';
 import { CHART_COLORS, FOOT_COLORS, FOOT_DASH } from '../tokens';
-import { FootLegend } from './LiveSignalPlot';
 import { readImus } from './imu';
 import type { ImuPoints } from './imu';
+import { FootLegend } from './LiveSignalPlot';
 
 /**
  * All three sensor-frame axes of one movement sensor at once. Three columns (X/Y/Z) by two
@@ -231,13 +231,7 @@ export function ImuAxes({
   }, [sensor, maxFps]);
 
   return (
-    <Paper
-      withBorder
-      p="md"
-      radius="md"
-      component="section"
-      aria-label="All movement sensor axes"
-    >
+    <Paper withBorder p="md" radius="md" component="section" aria-label="All movement sensor axes">
       <Stack gap="sm">
         <Group justify="space-between" wrap="wrap">
           <Title order={4}>Movement sensor axes</Title>
