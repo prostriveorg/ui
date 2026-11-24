@@ -258,19 +258,18 @@ export function ImuAxes({
             X/Y/Z are the sensor-frame axes. All three axes are shown for both feet.
           </Text>
         </Group>
-        {empty ? (
+        <canvas
+          ref={canvas}
+          width={960}
+          height={420}
+          role="img"
+          aria-label="Acceleration and angular speed for all three sensor axes, left solid and right dashed"
+          style={{ width: '100%', height: 420, display: 'block' }}
+        />
+        {empty && (
           <Text size="sm" fw={600}>
             No usable movement-sensor samples from sensor {sensor} in this window.
           </Text>
-        ) : (
-          <canvas
-            ref={canvas}
-            width={960}
-            height={420}
-            role="img"
-            aria-label="Acceleration and angular speed for all three sensor axes, left solid and right dashed"
-            style={{ width: '100%', height: 420, display: 'block' }}
-          />
         )}
         <Text role="status" size="xs">
           {status}
